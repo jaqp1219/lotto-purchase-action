@@ -12,7 +12,7 @@
  * 이 실행이 끝나면 구매 결과는 GitHub Issue 1개로 정리됩니다.
  */
 const MODEL = 'gemini-3.6-flash';
-const FALLBACK_NUMBERS = [3, 7, 12, 23, 31, 42];
+const FALLBACK_NUMBERS = [[6, 12, 18, 24, 33, 41]];
 
 export default async ({ purchaseManual }) => {
   console.log('=== 04-gemini-recommendation 시작 ===');
@@ -36,7 +36,7 @@ export default async ({ purchaseManual }) => {
     console.log(`Gemini 호출에 실패해 기본 번호를 사용합니다: ${message}`);
   }
 
-  const purchased = await purchaseManual([numbers]);
+  const purchased = await purchaseManual(numbers);
   console.log('구매 완료:', purchased);
 };
 
@@ -85,20 +85,28 @@ async function requestGeminiNumbers() {
 }
 
 function parseRecommendedNumbers(text) {
-  const numbers = text
-    .match(/\d+/g)
-    ?.map(Number)
-    .filter(num => num >= 1 && num <= 45);
+try {
+    const cleaned = text
+      .replace(/^```json\s*/i, '')
+      .replace(/^```\s*/i, '')
+      .replace(/```$/, '')
+      .trim();
 
-  if (!numbers) {
+    const result = JSON.parse(cleaned);
+
+    return result.filter(
+      numbers =>
+        Array.isArray(numbers) &&
+        numbers.length === 6 &&
+        numbers.every(
+          num =>
+            Number.isInteger(num) &&
+            num >= 1 &&
+            num <= 45
+        )
+    );
+  } catch (e) {
+    console.error('추천 번호 파싱 실패', e);
     return null;
   }
-
-  const uniqueNumbers = [...new Set(numbers)].slice(0, 6).sort((a, b) => a - b);
-
-  if (uniqueNumbers.length !== 6) {
-    return null;
-  }
-
-  return uniqueNumbers;
 }
