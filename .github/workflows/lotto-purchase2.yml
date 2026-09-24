@@ -1,1 +1,28 @@
+name: 로또 gemini 추천 구매
+on:
+  schedule:
+    - cron: '0 9 * * 4'
+  workflow_dispatch: # Allow manual trigger
 
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  purchase:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.55.1-jammy
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Custom purchase workflow
+        uses: ./
+        with:
+          dhlottery-id: ${{ secrets.DHLOTTERY_ID }}
+          dhlottery-password: ${{ secrets.DHLOTTERY_PASSWORD }}
+          github-token: ${{ github.token }}
+          workflow-file: custom-workflows/04-gemini-recommendation.js
