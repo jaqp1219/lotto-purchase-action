@@ -11,7 +11,7 @@
  *
  * 이 실행이 끝나면 구매 결과는 GitHub Issue 1개로 정리됩니다.
  */
-const MODEL = 'gemini-2.5-flash';
+const MODEL = 'gemini-3.6-flash';
 const FALLBACK_NUMBERS = [3, 7, 12, 23, 31, 42];
 
 export default async ({ purchaseManual }) => {
@@ -48,15 +48,23 @@ async function requestGeminiNumbers() {
       'x-goog-api-key': process.env.GEMINI_API_KEY
     },
     body: JSON.stringify({
-      contents: [
+      "system_instruction": {
+        "parts": [
+          {"text": "당신은 로또 번호 추천 시스템입니다. 다른 인사말, 설명, 마크다운, 추가 텍스트를 절대 출력하지 말고 오직 요청받은 표준 형식의 배열 문자열만 반환하세요."}
+        ]
+      },
+      "contents": [
         {
-          parts: [
+          "parts": [
             {
-              text: '로또 번호 1게임을 추천해 주세요. 1부터 45 사이 숫자 6개를 중복 없이 골라서 쉼표로만 답변해 주세요. 예: 3, 7, 12, 23, 31, 42'
+              "text": "최근 2년치의 로또 당첨 번호를 기반으로 당첨 확률이 높을 것 같은 이번주 번호를 추천해줘.\n조합 1. 핫 넘버 중심 (자주 나오는 상승세 조합)\n조합 2. 밸런스 조합 (자주 나온 번호 + 미출현 번호)\n위 2가지를 추천해주는데 답변은 아래와 같이 쉼표로 구분된 배열로 부탁해.\n예: [{3, 7, 12, 23, 31, 42}, {1, 2, 3, 4, 5, 6}]"
             }
           ]
         }
-      ]
+      ],
+      "generationConfig": {
+        "temperature": 0.2
+      }
     })
   });
 
