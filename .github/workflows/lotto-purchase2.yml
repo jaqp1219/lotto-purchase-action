@@ -21,9 +21,10 @@ jobs:
 
       - name: Custom purchase workflow
         uses: ./
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         with:
           dhlottery-id: ${{ secrets.DHLOTTERY_ID }}
           dhlottery-password: ${{ secrets.DHLOTTERY_PASSWORD }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           github-token: ${{ github.token }}
           workflow-file: custom-workflows/04-gemini-recommendation.js
