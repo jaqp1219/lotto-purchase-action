@@ -1,1 +1,30 @@
+name: 로또 구매 (수동 + 스케줄)
+on:
+  schedule:
+    - cron: '0 9 * * 5'
+  workflow_dispatch: # Allow manual trigger
 
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  purchase:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.55.1-jammy
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Custom purchase workflow
+        uses: ./
+        with:
+          dhlottery-id: ${{ secrets.DHLOTTERY_ID }}
+          dhlottery-password: ${{ secrets.DHLOTTERY_PASSWORD }}
+          github-token: ${{ github.token }}
+          telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          telegram-chat-id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          workflow-file: custom-workflows/02-manual-fixed-numbers.js
