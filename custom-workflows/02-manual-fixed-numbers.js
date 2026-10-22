@@ -8,8 +8,7 @@
  */
 
 const NUMBERS = [
-  [3, 11, 15, 29, 35, 44],
-  [7, 9, 23, 28, 33, 41]
+  [2, 19, 26, 34, 40, 43]
 ];
 
 export default async ({ purchaseManual }) => {
