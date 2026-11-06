@@ -1,7 +1,7 @@
 name: 로또 gemini 추천 구매
 on:
   schedule:
-    - cron: '0 9 * * 4'
+    - cron: '0 10 * * 5'
   workflow_dispatch: # Allow manual trigger
 
 permissions:
