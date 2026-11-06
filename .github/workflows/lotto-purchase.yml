@@ -1,7 +1,7 @@
 name: 로또 구매 (자동 + 스케줄)
 on:
   schedule:
-    - cron: '0 9 * * 5'
+    - cron: '0 10 * * 5'
   workflow_dispatch: # Allow manual trigger
 
 permissions:
